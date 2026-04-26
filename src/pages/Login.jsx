@@ -1,119 +1,138 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+export default function Login() {
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    // Basic validation
-    if (!email || !password) {
-      alert("Please fill all fields");
-      return;
-    }
-
+  const handleSubmit = async () => {
     try {
-      setLoading(true);
+      const url = isLogin
+        ? "http://localhost:5004/api/auth/login"
+        : "http://localhost:5004/api/auth/register";
 
-      const res = await axios.post(
-        "http://localhost:5004/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const res = await axios.post(url, { email, password });
 
-      console.log(res.data);
-      alert("Login Success ✅");
+      localStorage.setItem("token", res.data.token || "true");
 
-      // Save token (optional)
-      localStorage.setItem("token", res.data.token);
+      alert(isLogin ? "Login Success ✅" : "Registered Successfully 🎉");
+
+      navigate("/dashboard");
 
     } catch (err) {
-      console.error(err);
-      alert(
-        err?.response?.data?.message || "Login Failed ❌ (Check backend)"
-      );
-    } finally {
-      setLoading(false);
+      alert("Something went wrong ❌");
+      console.log(err);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>RetailSync Login</h2>
+    <div style={container}>
 
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Enter Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-          />
+      <div style={card}>
 
-          <input
-            type="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-          />
-          <Link to="/register">Register</Link>
-<p>
-  Don't have an account? <a href="/register">Register</a>
-</p>
-          <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+        <h1 style={title}>
+          {isLogin ? "Welcome Back 👋" : "Create Account 🚀"}
+        </h1>
+
+        <p style={subtitle}>
+          {isLogin
+            ? "Login to continue shopping"
+            : "Register to start your journey"}
+        </p>
+
+        <input
+          style={input}
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          style={input}
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button style={btn} onClick={handleSubmit}>
+          {isLogin ? "Login" : "Register"}
+        </button>
+
+        <p style={switchText}>
+          {isLogin ? "New user?" : "Already have account?"}
+
+          <span
+            style={link}
+            onClick={() => setIsLogin(!isLogin)}
+          >
+            {isLogin ? " Register here" : " Login here"}
+          </span>
+        </p>
+
       </div>
+
     </div>
   );
 }
 
-const styles = {
-  container: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "linear-gradient(135deg, #667eea, #764ba2)",
-  },
-  card: {
-    background: "#fff",
-    padding: "30px",
-    borderRadius: "15px",
-    width: "320px",
-    boxShadow: "0px 10px 25px rgba(0,0,0,0.2)",
-    textAlign: "center",
-  },
-  title: {
-    marginBottom: "20px",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    margin: "10px 0",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-  },
-  button: {
-    width: "100%",
-    padding: "10px",
-    background: "#667eea",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-  },
+/* 🎨 STYLES */
+
+const container = {
+  height: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  background: "linear-gradient(135deg, #f5f7fa, #e4ecf7)"
 };
 
-export default Login;
+const card = {
+  width: 350,
+  padding: 30,
+  background: "#fff",
+  borderRadius: 20,
+  boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+  textAlign: "center"
+};
+
+const title = {
+  marginBottom: 10
+};
+
+const subtitle = {
+  color: "#777",
+  marginBottom: 20
+};
+
+const input = {
+  width: "100%",
+  padding: 12,
+  margin: "10px 0",
+  borderRadius: 10,
+  border: "1px solid #ddd"
+};
+
+const btn = {
+  width: "100%",
+  padding: 12,
+  background: "#c9a96e",
+  color: "#fff",
+  border: "none",
+  borderRadius: 10,
+  marginTop: 10,
+  cursor: "pointer",
+  fontWeight: "bold"
+};
+
+const switchText = {
+  marginTop: 15,
+  fontSize: 14
+};
+
+const link = {
+  color: "#c9a96e",
+  cursor: "pointer",
+  fontWeight: "bold"
+};
