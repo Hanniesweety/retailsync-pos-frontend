@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API } from "../config"; // ✅ CORRECT PLACE
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -8,41 +9,36 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+const handleSubmit = async () => {
+  try {
+    const url = isLogin
+      ? `${API}/api/auth/login`
+      : `${API}/api/auth/register`;
 
-  const handleSubmit = async () => {
-    try {
-      const API = "https://retailsync-pos-backend.onrender.com";
+    const res = await axios.post(url, {
+      email,
+      password,
+    });
 
-      const url = isLogin
-        ? `${API}/api/auth/login`
-        : `${API}/api/auth/register`;
+    localStorage.setItem("token", res.data.token || "true");
 
-      const res = await axios.post(url, {
-        email,
-        password,
-      });
+    alert(isLogin ? "Login Success ✅" : "Registered Successfully 🎉");
 
-      // store token
-      localStorage.setItem("token", res.data.token || "true");
-
-      alert(isLogin ? "Login Success ✅" : "Registered Successfully 🎉");
-
-      if (isLogin) {
-        navigate("/dashboard");
-      } else {
-        setIsLogin(true); // switch to login after register
-      }
-
-    } catch (err) {
-      console.error(err);
-
-      // show backend error message if available
-      const msg =
-        err.response?.data?.message || "Something went wrong ❌";
-
-      alert(msg);
+    if (isLogin) {
+      navigate("/dashboard");
+    } else {
+      setIsLogin(true);
     }
-  };
+
+  } catch (err) {
+    console.error(err);
+
+    const msg =
+      err.response?.data?.message || "Something went wrong ❌";
+
+    alert(msg);
+  }
+};
 
   return (
     <div style={container}>

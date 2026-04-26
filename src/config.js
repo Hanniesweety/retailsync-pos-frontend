@@ -1,0 +1,1 @@
+export const API = "https://retailsync-pos-backend.onrender.com";
