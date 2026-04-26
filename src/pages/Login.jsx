@@ -11,29 +11,42 @@ export default function Login() {
 
   const handleSubmit = async () => {
     try {
+      const API = "https://retailsync-pos-backend.onrender.com";
+
       const url = isLogin
-        ? "http://localhost:5004/api/auth/login"
-        : "http://localhost:5004/api/auth/register";
+        ? `${API}/api/auth/login`
+        : `${API}/api/auth/register`;
 
-      const res = await axios.post(url, { email, password });
+      const res = await axios.post(url, {
+        email,
+        password,
+      });
 
+      // store token
       localStorage.setItem("token", res.data.token || "true");
 
       alert(isLogin ? "Login Success ✅" : "Registered Successfully 🎉");
 
-      navigate("/dashboard");
+      if (isLogin) {
+        navigate("/dashboard");
+      } else {
+        setIsLogin(true); // switch to login after register
+      }
 
     } catch (err) {
-      alert("Something went wrong ❌");
-      console.log(err);
+      console.error(err);
+
+      // show backend error message if available
+      const msg =
+        err.response?.data?.message || "Something went wrong ❌";
+
+      alert(msg);
     }
   };
 
   return (
     <div style={container}>
-
       <div style={card}>
-
         <h1 style={title}>
           {isLogin ? "Welcome Back 👋" : "Create Account 🚀"}
         </h1>
@@ -47,6 +60,7 @@ export default function Login() {
         <input
           style={input}
           placeholder="Email"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
@@ -54,6 +68,7 @@ export default function Login() {
           style={input}
           type="password"
           placeholder="Password"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
@@ -71,9 +86,7 @@ export default function Login() {
             {isLogin ? " Register here" : " Login here"}
           </span>
         </p>
-
       </div>
-
     </div>
   );
 }

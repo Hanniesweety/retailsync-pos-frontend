@@ -20,7 +20,7 @@ function Register() {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:5004/api/auth/register",
+        "https://retailsync-pos-backend.onrender.com/api/auth/register",
         {
           name,
           email,
