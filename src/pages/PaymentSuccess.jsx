@@ -20,9 +20,16 @@ export default function PaymentSuccess() {
             Back to Dashboard
           </button>
 
-          <button style={btn2}>
-            View Receipt
-          </button>
+          <button
+  style={btn2}
+  onClick={() =>
+    navigate("/receipt", {
+      state: { cart: location.state.cart, total }
+    })
+  }
+>
+  View Receipt
+</button>
         </div>
       </div>
     </div>

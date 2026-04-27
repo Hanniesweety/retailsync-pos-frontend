@@ -328,6 +328,7 @@ const handleRating = (id, star) => {
 >
   Pay Now
 </button>
+
         <button onClick={generateBill} style={billBtn}>
           Generate Bill
         </button>

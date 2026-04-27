@@ -3,6 +3,8 @@ import Dashboard from "./pages/Dashboard";
 import ProductDetails from "./pages/ProductDetails";
 import Login from "./pages/Login";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import Receipt from "./pages/Receipt";
+
 
 
 export default function App() {
@@ -12,6 +14,7 @@ export default function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/product" element={<ProductDetails />} />
       <Route path="/payment-success" element={<PaymentSuccess />} />
+      <Route path="/receipt" element={<Receipt />} />
     </Routes>
   );
 }
