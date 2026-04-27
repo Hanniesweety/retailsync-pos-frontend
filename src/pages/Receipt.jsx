@@ -1,146 +1,125 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useRef } from "react";
 
 export default function Receipt() {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const receiptRef = useRef();
 
   const cart = state?.cart || [];
   const total = state?.total || 0;
 
+  const downloadPDF = async () => {
+    const canvas = await html2canvas(receiptRef.current);
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF();
+    pdf.addImage(imgData, "PNG", 10, 10, 180, 0);
+    pdf.save("receipt.pdf");
+  };
+
   return (
     <div style={container}>
-      <div style={card}>
-        {/* HEADER */}
+      <div ref={receiptRef} style={card}>
         <h1 style={brand}>RetailSync POS</h1>
-        <p style={sub}>Billing Receipt</p>
+        <p style={sub}>Your Billing Receipt</p>
 
         <div style={divider}></div>
 
-        {/* DATE */}
         <p style={date}>{new Date().toLocaleString()}</p>
 
-        {/* ITEMS */}
-        <div style={{ marginTop: 15 }}>
-          {cart.map((item) => (
-            <div key={item.id} style={row}>
-              <span>{item.name}</span>
-              <span>
-                {item.qty} x ₹{item.price}
-              </span>
-            </div>
-          ))}
-        </div>
+        {cart.map((item) => (
+          <div key={item.id} style={row}>
+            <span>{item.name}</span>
+            <span>{item.qty} x ₹{item.price}</span>
+          </div>
+        ))}
 
         <div style={divider}></div>
 
-        {/* TOTAL */}
-        <h2 style={totalText}>Total: ₹ {total}</h2>
+        <h2>Total: ₹ {total}</h2>
 
-        {/* THANK YOU MESSAGE */}
         <p style={thank}>
           Thank you for shopping in RetailSync POS 🛍️
         </p>
 
-        {/* TEAM FOOTER */}
         <p style={team}>
           — By teammates of Hannie, Lakshmi, Lawerance, Shifil —
         </p>
+      </div>
 
-        {/* BUTTONS */}
-        <div style={{ marginTop: 20 }}>
-          <button style={btn} onClick={() => window.print()}>
-            🖨️ Print
-          </button>
+      {/* BUTTONS */}
+      <div style={{ marginTop: 20 }}>
+        <button style={btn} onClick={downloadPDF}>
+          📄 Download PDF
+        </button>
 
-          <button style={btn2} onClick={() => navigate("/dashboard")}>
-            Back to Dashboard
-          </button>
-        </div>
+        <button style={btn} onClick={() => window.print()}>
+          🖨️ Print
+        </button>
+
+        <button style={btn2} onClick={() => navigate("/dashboard")}>
+          Back
+        </button>
       </div>
     </div>
   );
 }
 
-/* 🎨 PREMIUM STYLES */
+/* 🎨 styles */
 
 const container = {
   height: "100vh",
   display: "flex",
-  justifyContent: "center",
+  flexDirection: "column",
   alignItems: "center",
+  justifyContent: "center",
   background: "#f5f2ed",
   fontFamily: "Calibri"
 };
 
 const card = {
-  width: 380,
+  width: 350,
   background: "#fff",
-  padding: 30,
-  borderRadius: 18,
-  boxShadow: "0 12px 30px rgba(0,0,0,0.12)",
+  padding: 25,
+  borderRadius: 15,
   textAlign: "center"
 };
 
-const brand = {
-  color: "#c9a96e",
-  marginBottom: 5
-};
-
-const sub = {
-  color: "#888",
-  fontSize: 14
-};
-
-const date = {
-  fontSize: 13,
-  color: "#666"
-};
+const brand = { color: "#c9a96e" };
+const sub = { color: "#888" };
+const date = { fontSize: 12 };
 
 const row = {
   display: "flex",
   justifyContent: "space-between",
-  margin: "8px 0",
-  fontSize: 15
-};
-
-const totalText = {
-  marginTop: 10,
-  color: "#333"
-};
-
-const thank = {
-  marginTop: 15,
-  fontSize: 14,
-  color: "#444"
-};
-
-const team = {
-  marginTop: 5,
-  fontSize: 12,
-  color: "#888"
+  margin: "6px 0"
 };
 
 const divider = {
   height: 1,
   background: "#eee",
-  margin: "15px 0"
+  margin: "10px 0"
 };
+
+const thank = { marginTop: 10 };
+const team = { fontSize: 12, color: "#888" };
 
 const btn = {
   padding: 10,
-  margin: 8,
+  margin: 5,
   background: "#c9a96e",
   color: "#fff",
   border: "none",
-  borderRadius: 8,
-  cursor: "pointer"
+  borderRadius: 8
 };
 
 const btn2 = {
   padding: 10,
-  margin: 8,
+  margin: 5,
   background: "#ddd",
   border: "none",
-  borderRadius: 8,
-  cursor: "pointer"
+  borderRadius: 8
 };
