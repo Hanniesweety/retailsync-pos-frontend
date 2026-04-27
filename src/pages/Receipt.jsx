@@ -10,73 +10,137 @@ export default function Receipt() {
   return (
     <div style={container}>
       <div style={card}>
-        <h2>🧾 Receipt</h2>
+        {/* HEADER */}
+        <h1 style={brand}>RetailSync POS</h1>
+        <p style={sub}>Billing Receipt</p>
 
-        <p>{new Date().toLocaleString()}</p>
+        <div style={divider}></div>
 
-        <hr />
+        {/* DATE */}
+        <p style={date}>{new Date().toLocaleString()}</p>
 
-        {cart.map((item) => (
-          <div key={item.id} style={row}>
-            <span>{item.name}</span>
-            <span>
-              {item.qty} x ₹{item.price}
-            </span>
-          </div>
-        ))}
+        {/* ITEMS */}
+        <div style={{ marginTop: 15 }}>
+          {cart.map((item) => (
+            <div key={item.id} style={row}>
+              <span>{item.name}</span>
+              <span>
+                {item.qty} x ₹{item.price}
+              </span>
+            </div>
+          ))}
+        </div>
 
-        <hr />
+        <div style={divider}></div>
 
-        <h3>Total: ₹{total}</h3>
+        {/* TOTAL */}
+        <h2 style={totalText}>Total: ₹ {total}</h2>
 
-        <button style={btn} onClick={() => window.print()}>
-          Print
-        </button>
+        {/* THANK YOU MESSAGE */}
+        <p style={thank}>
+          Thank you for shopping in RetailSync POS 🛍️
+        </p>
 
-        <button style={btn2} onClick={() => navigate("/dashboard")}>
-          Back
-        </button>
+        {/* TEAM FOOTER */}
+        <p style={team}>
+          — By teammates of Hannie, Lakshmi, Lawerance, Shifil —
+        </p>
+
+        {/* BUTTONS */}
+        <div style={{ marginTop: 20 }}>
+          <button style={btn} onClick={() => window.print()}>
+            🖨️ Print
+          </button>
+
+          <button style={btn2} onClick={() => navigate("/dashboard")}>
+            Back to Dashboard
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-/* 🎨 styles */
+/* 🎨 PREMIUM STYLES */
 
 const container = {
   height: "100vh",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  background: "#f6f3ef",
+  background: "#f5f2ed",
+  fontFamily: "Calibri"
 };
 
 const card = {
+  width: 380,
   background: "#fff",
   padding: 30,
-  borderRadius: 15,
-  width: 350,
+  borderRadius: 18,
+  boxShadow: "0 12px 30px rgba(0,0,0,0.12)",
+  textAlign: "center"
+};
+
+const brand = {
+  color: "#c9a96e",
+  marginBottom: 5
+};
+
+const sub = {
+  color: "#888",
+  fontSize: 14
+};
+
+const date = {
+  fontSize: 13,
+  color: "#666"
 };
 
 const row = {
   display: "flex",
   justifyContent: "space-between",
-  margin: "10px 0",
+  margin: "8px 0",
+  fontSize: 15
+};
+
+const totalText = {
+  marginTop: 10,
+  color: "#333"
+};
+
+const thank = {
+  marginTop: 15,
+  fontSize: 14,
+  color: "#444"
+};
+
+const team = {
+  marginTop: 5,
+  fontSize: 12,
+  color: "#888"
+};
+
+const divider = {
+  height: 1,
+  background: "#eee",
+  margin: "15px 0"
 };
 
 const btn = {
-  marginTop: 15,
   padding: 10,
+  margin: 8,
   background: "#c9a96e",
   color: "#fff",
   border: "none",
   borderRadius: 8,
+  cursor: "pointer"
 };
 
 const btn2 = {
-  marginTop: 10,
   padding: 10,
+  margin: 8,
   background: "#ddd",
   border: "none",
   borderRadius: 8,
+  cursor: "pointer"
 };
