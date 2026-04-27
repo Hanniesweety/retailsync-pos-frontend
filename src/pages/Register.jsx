@@ -6,46 +6,50 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+const handleRegister = async (e) => {
+  e.preventDefault();
 
-    // Basic validation
-    if (!name || !email || !password) {
-      alert("Please fill all fields");
-      return;
+  if (!name || !email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const res = await axios.post(
+      "https://retailsync-pos-backend.onrender.com/api/auth/register",
+      {
+        name,
+        email,
+        password,
+      }
+    );
+
+    console.log("REGISTER RESPONSE:", res.data);
+
+    // ✅ IMPORTANT CHECK
+    if (res.data && res.data._id) {
+      alert("Registered Successfully 🎉");
+
+      // 👉 go to login (better flow)
+      navigate("/");
+    } else {
+      alert("Registration failed ❌");
     }
 
-    try {
-      setLoading(true);
+  } catch (err) {
+    console.error("REGISTER ERROR:", err.response?.data || err.message);
 
-      const res = await axios.post(
-        "https://retailsync-pos-backend.onrender.com/api/auth/register",
-        {
-          name,
-          email,
-          password,
-        }
-      );
-
-      alert("Registered Successfully ✅");
-      console.log(res.data);
-
-      // clear form
-      setName("");
-      setEmail("");
-      setPassword("");
-
-    } catch (err) {
-      console.error(err);
-      alert(
-        err?.response?.data?.message || "Registration Failed ❌"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    alert(
+      err?.response?.data?.message || "Registration Failed ❌"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div style={styles.container}>
       <div style={styles.card}>

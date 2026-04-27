@@ -319,7 +319,15 @@ const handleRating = (id, star) => {
         <p>Tax: ₹{tax}</p>
 
         <h3>Total ₹{total + tax}</h3>
-
+<button
+  onClick={() =>
+    navigate("/payment-success", {
+      state: { total }
+    })
+  }
+>
+  Pay Now
+</button>
         <button onClick={generateBill} style={billBtn}>
           Generate Bill
         </button>

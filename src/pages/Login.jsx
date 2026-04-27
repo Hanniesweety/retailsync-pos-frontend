@@ -1,44 +1,51 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { API } from "../config"; // ✅ CORRECT PLACE
+import { API } from "../config";
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState(""); // ✅ added
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-const handleSubmit = async () => {
-  try {
-    const url = isLogin
-      ? `${API}/api/auth/login`
-      : `${API}/api/auth/register`;
 
-    const res = await axios.post(url, {
-      email,
-      password,
-    });
+  const handleSubmit = async () => {
+    try {
+      const url = isLogin
+        ? `${API}/api/auth/login`
+        : `${API}/api/auth/register`;
 
-    localStorage.setItem("token", res.data.token || "true");
+      const payload = isLogin
+        ? { email, password }
+        : { name, email, password }; // ✅ include name only for register
 
-    alert(isLogin ? "Login Success ✅" : "Registered Successfully 🎉");
+      const res = await axios.post(url, payload);
 
-    if (isLogin) {
-      navigate("/dashboard");
-    } else {
-      setIsLogin(true);
+      // ✅ save real token only
+      localStorage.setItem("token", res.data.token);
+
+      alert(isLogin ? "Login Success ✅" : "Registered Successfully 🎉");
+
+      if (isLogin) {
+        navigate("/dashboard");
+      } else {
+        setIsLogin(true);
+        setName("");
+        setEmail("");
+        setPassword("");
+      }
+
+    } catch (err) {
+      console.error(err);
+
+      const msg =
+        err.response?.data?.message || "Something went wrong ❌";
+
+      alert(msg);
     }
-
-  } catch (err) {
-    console.error(err);
-
-    const msg =
-      err.response?.data?.message || "Something went wrong ❌";
-
-    alert(msg);
-  }
-};
+  };
 
   return (
     <div style={container}>
@@ -52,6 +59,16 @@ const handleSubmit = async () => {
             ? "Login to continue shopping"
             : "Register to start your journey"}
         </p>
+
+        {/* ✅ NAME FIELD ONLY FOR REGISTER */}
+        {!isLogin && (
+          <input
+            style={input}
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        )}
 
         <input
           style={input}
